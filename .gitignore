@@ -55,5 +55,4 @@ dkms.conf
 *.dwo
 
 lex.yy.c
-wordcount
-bin/*
+**/bin/*
