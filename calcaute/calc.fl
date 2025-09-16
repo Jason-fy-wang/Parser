@@ -1,16 +1,31 @@
 %option noyywrap  yylineno
 %{
 #include "calc.tab.h"
+#include <stdio.h>
+#include<string.h>
 %}
 
+DIGIT   [0-9]
+INT     {DIGIT}+
+FRAC    ({DIGIT}*"."{DIGIT}+|{DIGIT}+"."{DIGIT}+)
+EXP     ([eE][+-]?{DIGIT}+)
+NUMBER  ({FRAC}|{INT}){EXP}?|\.{DIGIT}+{EXP}?
 
 %%
-[0-9]+      {yylval.ival = atoi(yytext); return NUMBER;}
 [ \t\r]     {}
+{NUMBER}    {
+                yylval.dval = atof(yytext); 
+                return NUMBER;
+            }
+[a-zA-Z_][a-zA-Z0-9_]*  {
+                yylval.sval = strdup(yytext);
+                return IDENT;
+            }
 \n          {return '\n';}
 "+"      {return PLUS;}
 "-"      {return MINUS;}
 "*"      {return MUL;}
+"^"      {return POW;}
 "/"      {return DIV;}
 "("      {return LPAREN;}   
 ")"     {return RPAREN;}
