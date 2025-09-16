@@ -9,12 +9,17 @@ int yylex(void);
 void yyerror(const char* s);
 %}
 
-%token NUMBER
+%union {
+    int ival;
+}
+
+%token <ival> NUMBER
 %token PLUS MINUS MUL DIV LPAREN RPAREN
 
 %left PLUS MINUS
 %left MUL DIV
 %right UMINUS
+%type <ival> expr
 
 %start input
 

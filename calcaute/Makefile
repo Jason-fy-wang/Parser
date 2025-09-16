@@ -16,7 +16,7 @@ ${TARGET}: calc.y calc.fl
 
 
 clean:
-	rm -rf calc.tab.*  calc  lex.yy.c
+	rm -rf calc.tab.*  calc  lex.yy.c calc.output
 
 
 
