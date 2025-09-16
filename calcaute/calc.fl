@@ -1,0 +1,21 @@
+%option noyywrap  yylineno
+%{
+#include "calc.tab.h"
+%}
+
+
+%%
+[0-9]+      {yylval = atoi(yytext); return NUMBER;}
+[ \t\r]     {}
+\n          {return '\n';}
+"+"      {return PLUS;}
+"-"      {return MINUS;}
+"*"      {return MUL;}
+"/"      {return DIV;}
+"("      {return LPAREN;}   
+")"     {return RPAREN;}
+.       {return yytext[0];}
+
+%%
+
+
