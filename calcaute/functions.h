@@ -11,4 +11,28 @@ double lookup(const char* name);
 #define M_E  2.71828182845904523536
 #endif
 
+struct ast {
+    int nodetype;
+    struct ast* l;
+    struct ast* r;
+};
+
+
+struct numval{
+    int nodetype;
+    double number;
+};
+
+// build ast
+struct ast* newast(int nodetype, struct ast* l, struct ast* r);
+struct ast* newnum(double num);
+
+// evaluate ast
+double eval(struct ast*);
+
+void treefree(struct ast*);
+
+void yyerror(const char*s, ...);
+extern int yylineno;
+
 #endif

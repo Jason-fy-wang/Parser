@@ -21,7 +21,7 @@ NUMBER  ({FRAC}|{INT}){EXP}?|\.{DIGIT}+{EXP}?
                 yylval.sval = strdup(yytext);
                 return IDENT;
             }
-\n          {return '\n';}
+\n          {return EOL;}
 "+"      {return PLUS;}
 "-"      {return MINUS;}
 "*"      {return MUL;}

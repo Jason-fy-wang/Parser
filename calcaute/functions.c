@@ -3,7 +3,7 @@
 #include<string.h>
 #include<math.h>
 #include "functions.h"
-
+#include<stdarg.h>
 
 double call_func(const char* name, double arg){
     if(strcasecmp(name,"sin") == 0) {
@@ -62,4 +62,87 @@ double lookup(const char* name){
 
     fprintf(stderr, "Unknow identifier :%s\n", name);
     return 0.0;
+}
+
+// build ast
+struct ast* newast(int nodetype, struct ast* l, struct ast* r){
+    struct ast* a = malloc(sizeof(struct ast));
+    if (!a) {
+        yyerror("out of space");
+        exit(1);
+    }
+
+    a->nodetype = nodetype;
+    a->l = l;
+    a->r = r;
+
+    return a;
+}
+
+struct ast* newnum(double num) {
+    struct numval* a = malloc(sizeof(struct numval));
+    a->nodetype = 'k';
+    a->number = num;
+    return (struct ast*) a;
+}
+
+// evaluate ast
+double eval(struct ast* ast) {
+    double v;
+
+    switch (ast->nodetype)
+    {
+    case 'k':
+        v = ((struct numval*)ast)->number;
+        break;
+    case 'm':
+        v = -eval(ast->l);
+        break;
+    case '+': 
+        v = eval(ast->l) + eval(ast->r);
+        break;
+        
+    case '-': 
+        v = eval(ast->l) - eval(ast->r);
+        break;
+    case '*': 
+        v = eval(ast->l) * eval(ast->r);
+        break;
+    case '/': 
+        v = eval(ast->l) / eval(ast->r);
+        break;
+    default:
+        printf("internal error: bad node: %c\n", ast->nodetype);
+        break;
+    }
+    return v;
+}
+
+void treefree(struct ast* ast){
+    switch(ast->nodetype){
+        case '+':
+        case '-':
+        case '*':
+        case '/':
+            treefree(ast->r);
+        case '|':
+        case 'm':
+            treefree(ast->l);
+        
+        case 'k':
+            free(ast);
+            break;
+        default:
+            printf("internal error: free bad node: %c\n", ast->nodetype);
+            break;
+    }
+}
+
+void yyerror(const char*s, ...) {
+    va_list ap;
+    va_start(ap,s);
+
+    fprintf(stderr, "%d error:", yylineno);
+    vfprintf(stderr, s, ap);
+    fprintf(stderr, "\n");
 }
